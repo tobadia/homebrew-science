@@ -34,9 +34,15 @@ class RGui < Formula
 
     r_opt_prefix = Formula["r"].opt_prefix
 
+    # xcodebuild must be fed with MACOSX_DEPLOYMENT_TARGET when SDK is not
+    # available for the installed system version
+    # (e.g. updated Xcode/CLT to newer versions but MacOS not updated)
+    macos_version = MacOS.version.to_s
+
     xcodebuild "-target", "R", "-configuration", "Release", "SYMROOT=build",
                "HEADER_SEARCH_PATHS=#{r_opt_prefix}/R.framework/Headers",
-               "OTHER_LDFLAGS=-F#{r_opt_prefix}"
+               "OTHER_LDFLAGS=-F#{r_opt_prefix}",
+               "MACOSX_DEPLOYMENT_TARGET=#{macos_version}"
 
     prefix.install "build/Release/R.app"
   end
